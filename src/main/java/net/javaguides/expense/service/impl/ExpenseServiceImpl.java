@@ -3,6 +3,7 @@ package net.javaguides.expense.service.impl;
 import net.javaguides.expense.dto.ExpenseDto;
 import net.javaguides.expense.entity.Category;
 import net.javaguides.expense.entity.Expense;
+import net.javaguides.expense.exceptions.ResourceNotFoundException;
 import net.javaguides.expense.mapper.ExpenseMapper;
 import net.javaguides.expense.repository.CategoryRepository;
 import net.javaguides.expense.repository.ExpenseRepository;
@@ -32,7 +33,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public ExpenseDto getExpenseById(Long expenseId) {
-        Expense expense = expenseRepository.findById(expenseId).orElseThrow(()-> new RuntimeException("Expense Not found with given id "+expenseId));
+        Expense expense = expenseRepository.findById(expenseId).orElseThrow(()-> new ResourceNotFoundException("Expense Not found with given id "+expenseId));
         return ExpenseMapper.mapToExpenseDto(expense);
     }
 
@@ -44,14 +45,14 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public ExpenseDto updateExpense(Long expenseId, ExpenseDto expenseDto) {
-        Expense expense = expenseRepository.findById(expenseId).orElseThrow(()->new RuntimeException("Expense not found with given id "+expenseId));
+        Expense expense = expenseRepository.findById(expenseId).orElseThrow(()->new ResourceNotFoundException("Expense not found with given id "+expenseId));
 
         //update the expense
         expense.setAmount(expenseDto.amount());
         expense.setExpenseDate(expenseDto.expensedate());
 
         if(expenseDto.categoryDto() != null){
-            Category category = categoryRepository.findById(expenseDto.categoryDto().id()).orElseThrow(()->new RuntimeException("category not found with given id expense-categoryId "+expenseDto.categoryDto().id()));
+            Category category = categoryRepository.findById(expenseDto.categoryDto().id()).orElseThrow(()->new ResourceNotFoundException("category not found with given id expense-categoryId "+expenseDto.categoryDto().id()));
             expense.setCategory(category);
         }
 
@@ -62,7 +63,7 @@ public class ExpenseServiceImpl implements ExpenseService {
 
     @Override
     public void deleteExpense(Long expenseId) {
-        Expense expense = expenseRepository.findById(expenseId).orElseThrow(()->new RuntimeException("Expense not found with given id "+expenseId));
+        Expense expense = expenseRepository.findById(expenseId).orElseThrow(()->new ResourceNotFoundException("Expense not found with given id "+expenseId));
         expenseRepository.delete(expense);
     }
 }

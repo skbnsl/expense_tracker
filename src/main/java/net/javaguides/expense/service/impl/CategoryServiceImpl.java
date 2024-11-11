@@ -3,6 +3,7 @@ package net.javaguides.expense.service.impl;
 import lombok.AllArgsConstructor;
 import net.javaguides.expense.dto.CategoryDto;
 import net.javaguides.expense.entity.Category;
+import net.javaguides.expense.exceptions.ResourceNotFoundException;
 import net.javaguides.expense.mapper.CategoryMapper;
 import net.javaguides.expense.repository.CategoryRepository;
 import net.javaguides.expense.service.CategoryService;
@@ -33,7 +34,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto getCategoryById(Long categoryId) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(()-> new RuntimeException("category not found with given id: "+categoryId));
+        Category category = categoryRepository.findById(categoryId).orElseThrow(()-> new ResourceNotFoundException("category not found with given id: "+categoryId));
         return CategoryMapper.mapToCategoryDto(category);
     }
 
@@ -46,7 +47,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto updateCategory(Long categoryId, CategoryDto categoryDto) {
-        Category category = categoryRepository.findById(categoryId).orElseThrow(()->new RuntimeException("category not found with given id: "+categoryId));
+        Category category = categoryRepository.findById(categoryId).orElseThrow(()->new ResourceNotFoundException("category not found with given id: "+categoryId));
 
         //uodate the categry entity objest and save to db
         category.setName(categoryDto.name());
@@ -56,7 +57,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void deleteCategory(Long categoryId) {
-         Category category = categoryRepository.findById(categoryId).orElseThrow(()->new RuntimeException("category not found with given id: "+categoryId));
+         Category category = categoryRepository.findById(categoryId).orElseThrow(()->new ResourceNotFoundException("category not found with given id: "+categoryId));
          categoryRepository.delete(category);
     }
 
